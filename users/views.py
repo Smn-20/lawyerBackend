@@ -91,11 +91,13 @@ class register_client(CreateAPIView):
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
     def create(self, request):
-        print(request.data)
+        body_unicode=request.body.decode('utf-8')
+        body=json.loads(body_unicode)
+        print(body)
         # alphabet = string.ascii_letters + string.digits
         # password = ''.join(secrets.choice(alphabet) for i in range(6))
         try:
-            user_ = User.objects.get(email=request.data['email'])
+            user_ = User.objects.get(email=body_unicode['email'])
             response = {
                 'status': 'Failure',
                 'code': status.HTTP_400_BAD_REQUEST,
@@ -106,20 +108,106 @@ class register_client(CreateAPIView):
             return Response(response)
         except User.DoesNotExist:
             user = User.objects.create_user(
-                    email=request.data['email'],
+                    email=body_unicode['email'],
                     user_type='client',
-                    password=request.data['password'])
+                    password=body_unicode['password'])
             
             client = Client()
             client.user = user
-            client.name=request.data['name']
-            client.phone=request.data['phone']
-            client.address=request.data['address']
+            client.name=body_unicode['name']
+            client.phone=body_unicode['phone']
+            client.address=body_unicode['address']
             client.save()
             response = {
                 'status': 'success',
                 'code': status.HTTP_200_OK,
                 'message': 'client created successfully!!!',
+                'data': []
+            }
+
+            return Response(response)
+
+
+
+class register_firm(CreateAPIView):
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+
+    def create(self, request):
+        body_unicode=request.body.decode('utf-8')
+        body=json.loads(body_unicode)
+        print(body)
+        # alphabet = string.ascii_letters + string.digits
+        # password = ''.join(secrets.choice(alphabet) for i in range(6))
+        try:
+            user_ = User.objects.get(email=body['email'])
+            response = {
+                'status': 'Failure',
+                'code': status.HTTP_400_BAD_REQUEST,
+                'message': 'A user with that email already exists!',
+                'data': []
+            }
+
+            return Response(response)
+        except User.DoesNotExist:
+            user = User.objects.create_user(
+                    email=body['email'],
+                    user_type='firm',
+                    password=body['password'])
+            
+            client = Firm()
+            client.user = user
+            client.name=body['name']
+            client.phone=body['phone']
+            client.address=body['address']
+            client.save()
+            response = {
+                'status': 'success',
+                'code': status.HTTP_200_OK,
+                'message': 'Firm registered successfully!!!',
+                'data': []
+            }
+
+            return Response(response)
+
+
+
+
+class register_lawyer(CreateAPIView):
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+
+    def create(self, request):
+        body_unicode=request.body.decode('utf-8')
+        body=json.loads(body_unicode)
+        print(body)
+        # alphabet = string.ascii_letters + string.digits
+        # password = ''.join(secrets.choice(alphabet) for i in range(6))
+        try:
+            user_ = User.objects.get(email=body['email'])
+            response = {
+                'status': 'Failure',
+                'code': status.HTTP_400_BAD_REQUEST,
+                'message': 'A user with that email already exists!',
+                'data': []
+            }
+
+            return Response(response)
+        except User.DoesNotExist:
+            user = User.objects.create_user(
+                    email=body['email'],
+                    user_type='lawyer',
+                    password=body['password'])
+            firm = Firm.objects.get(id=str(body['firm']))
+            client = Lawyer()
+            client.user = user
+            client.firm = firm
+            client.name=body['name']
+            client.phone=body['phone']
+            client.address=body['address']
+            client.save()
+            response = {
+                'status': 'success',
+                'code': status.HTTP_200_OK,
+                'message': 'Lawyer registered successfully!!!',
                 'data': []
             }
 

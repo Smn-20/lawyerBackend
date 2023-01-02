@@ -16,7 +16,7 @@ class CaseSerializer(serializers.ModelSerializer):
 
 class FirmSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Case
+        model = Firm
         fields = '__all__'
 
 class LawyerSerializer(serializers.ModelSerializer):
