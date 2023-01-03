@@ -28,6 +28,12 @@ class LawyerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lawyer
         fields = '__all__'
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if data['firm'] is not None:
+            data['firm'] = FirmSerializer(
+                Firm.objects.get(pk=data['firm'])).data 
+        return data 
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
