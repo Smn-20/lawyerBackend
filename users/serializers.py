@@ -10,6 +10,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CaseSerializer(serializers.ModelSerializer):
+    proof = serializers.FileField(
+        max_length = 1000000,
+        allow_empty_file = False,
+        write_only = True
+    )
     class Meta:
         model = Case
         fields = '__all__'

@@ -105,7 +105,7 @@ class Case(models.Model):
     firm = models.ForeignKey('Firm',on_delete=models.SET_NULL, null=True,blank=True)
     subject = models.CharField(max_length=255,null=True,blank=True)
     area = models.CharField(max_length=255,null=True,blank=True)
-    proof = models.ImageField(null=True,blank=True)
+    proof = models.ImageField(null=True,blank=True,upload_to='media/')
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now_add=True,blank=True,null=True)
 

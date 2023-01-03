@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.http import HttpResponse, JsonResponse
+
 # Create your views here.
 
 def login(request):
@@ -97,7 +98,7 @@ class register_client(CreateAPIView):
         # alphabet = string.ascii_letters + string.digits
         # password = ''.join(secrets.choice(alphabet) for i in range(6))
         try:
-            user_ = User.objects.get(email=body_unicode['email'])
+            user_ = User.objects.get(email=body['email'])
             response = {
                 'status': 'Failure',
                 'code': status.HTTP_400_BAD_REQUEST,
@@ -108,15 +109,15 @@ class register_client(CreateAPIView):
             return Response(response)
         except User.DoesNotExist:
             user = User.objects.create_user(
-                    email=body_unicode['email'],
+                    email=body['email'],
                     user_type='client',
-                    password=body_unicode['password'])
+                    password=body['password'])
             
             client = Client()
             client.user = user
-            client.name=body_unicode['name']
-            client.phone=body_unicode['phone']
-            client.address=body_unicode['address']
+            client.name=body['name']
+            client.phone=body['phone']
+            client.address=body['address']
             client.save()
             response = {
                 'status': 'success',
@@ -212,3 +213,34 @@ class register_lawyer(CreateAPIView):
             }
 
             return Response(response)
+
+
+class add_case(CreateAPIView):
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
+    queryset = Case.objects.all()
+    serializer_class = CaseSerializer
+
+# class add_case(CreateAPIView):
+#     parser_classes = (MultiPartParser, FormParser, JSONParser)
+#     serializer_class = CaseSerializer
+#     def create(self, request):
+#         body_unicode=request.body.decode('utf-8')
+#         body=json.loads(body_unicode)
+#         print(request.body)
+#         firm = Firm.objects.get(id=str(body['firm']))
+#         client = Client.objects.get(id=str(body['client']))
+#         case = Case()
+#         case.client = client
+#         case.firm = firm
+#         case.subject=body['subject']
+#         case.area=body['area']
+#         case.proof=body['proof']
+#         case.save()
+#         response = {
+#             'status': 'success',
+#             'code': status.HTTP_200_OK,
+#             'message': 'Case added successfully!!!',
+#             'data': []
+#         }
+
+#         return Response(response)

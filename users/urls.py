@@ -16,4 +16,5 @@ urlpatterns = [
     path('register_client/',register_client.as_view(),name='register_client'),
     path('register_firm/',register_firm.as_view(),name='register_firm'),
     path('register_lawyer/',register_lawyer.as_view(),name='register_lawyer'),
+    path('add_case/',add_case.as_view(),name='add_case'),
 ]
